@@ -1,0 +1,12 @@
+---
+description: Runtime dependencies must be used; remove packages knip reports as unused
+alwaysApply: true
+---
+
+# Dependencies
+
+Every installed runtime dependency must have a concrete use in the project. Do not add a package for a feature that is not being built.
+
+If knip reports a package as unused after the work that needed it, remove the package.
+
+Install these only when that feature is actually required: gsap, lenis, react-pdf, react-markdown, remark-gfm, rehype-slug, rehype-autolink-headings, posthog-js, posthog-node, resend, react-map-gl, mapbox-gl.
