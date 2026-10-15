@@ -20,7 +20,7 @@ function notFoundResponse(locale: Locale) {
 
 const reserved = ["/admin", "/api"];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (reserved.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.next();
@@ -37,8 +37,12 @@ export function proxy(request: NextRequest) {
   if (isLocale(locale) && section) {
     const known = pages.has(section);
     const detail = known && slugPages.has(section as SlugSection);
-    if (extra || !known || (slug && !detail) || (slug && detail && isPublishedSlug(section as SlugSection, slug) === false)) {
+    if (extra || !known || (slug && !detail)) {
       return notFoundResponse(locale);
+    }
+    if (slug && detail) {
+      const published = await isPublishedSlug(section as SlugSection, slug);
+      if (published === false) return notFoundResponse(locale);
     }
   }
 

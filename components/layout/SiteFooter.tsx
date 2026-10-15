@@ -14,6 +14,7 @@ const links = [
   ["projects", "/projects"],
   ["standards", "/standards"],
   ["news", "/news"],
+  ["documents", "/documents"],
   ["contacts", "/contacts"],
 ] as const;
 
@@ -41,11 +42,9 @@ export function SiteFooter({
         </div>
         <nav aria-label={t.footerNav}>
           <ul className="space-y-2">
-            {links.filter(([key]) => key !== "contacts").map(([key, href]) => (
+            {links.map(([key, href]) => (
               <li key={key}><Link href={localePath(locale, href)} className="text-sm hover:text-muted">{t.nav[key]}</Link></li>
             ))}
-            <li><Link href={localePath(locale, "/documents")} className="text-sm hover:text-muted">{t.documents}</Link></li>
-            <li><Link href={localePath(locale, "/contacts")} className="text-sm hover:text-muted">{t.nav.contacts}</Link></li>
           </ul>
         </nav>
         <div>

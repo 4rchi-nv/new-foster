@@ -108,10 +108,19 @@ export function ProjectInquiryForm({ locale, source = "" }: { locale: Locale; so
       </div>
       <FileBag files={files} />
       <label className="flex items-start gap-3 text-sm leading-6">
-        <input type="checkbox" name="consent" value="yes" className="mt-1" />
+        <input
+          type="checkbox"
+          name="consent"
+          value="yes"
+          required
+          aria-required="true"
+          aria-invalid={fieldError("consent") ? true : undefined}
+          aria-describedby={fieldError("consent") ? "inquiry-consent-error" : undefined}
+          className="mt-1"
+        />
         <span>{t.consent}</span>
       </label>
-      {fieldError("consent") ? <p className="text-sm text-danger">{fieldError("consent")}</p> : null}
+      {fieldError("consent") ? <p id="inquiry-consent-error" className="text-sm text-danger">{fieldError("consent")}</p> : null}
       {formError ? <p className="text-sm text-danger" role="alert">{formError}</p> : null}
       <button type="submit" disabled={pending} className="chamfer w-fit bg-foreground px-5 py-3 text-surface disabled:opacity-60 [--cut:10px]">
         {pending ? t.sending : t.submit}
@@ -142,6 +151,8 @@ function Field({
         name={name}
         type={type}
         autoComplete={autoComplete}
+        required
+        aria-required="true"
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
         className="border border-border bg-surface px-3 py-3 text-base"
