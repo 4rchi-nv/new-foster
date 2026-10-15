@@ -121,10 +121,17 @@ Vercel → Settings → Environment Variables (Preview or Production):
 
 Redeploy. Open `/ru` and `/admin`.
 
+If Vercel still returns 500 and Turso is empty (no tables), create the schema once from the laptop:
+
+1. Temporarily put the Turso `DATABASE_URL` + `DATABASE_AUTH_TOKEN` into `.env.local`.
+2. Run `npm run dev` and open `http://localhost:3000/ru` once (first load can take 1–3 minutes).
+3. Restore `.env.local` to `file:./data/payload.db`.
+4. Reload `https://your-app.vercel.app/ru`.
+
 Notes:
 
-- Do **not** put Turso values into `.env.local` unless you intentionally want to talk to the remote DB from the laptop.
-- Local `data/payload.db` is not uploaded. Empty Turso gets seed; fill the rest in `/admin`.
+- Do **not** keep Turso credentials in `.env.local` for daily local work.
+- Local `data/payload.db` is not uploaded. Seed fills the empty Turso DB on first successful init.
 - Media/`storage` on Vercel are not durable until object storage is wired.
 
 ## Routes

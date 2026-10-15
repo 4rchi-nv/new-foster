@@ -29,8 +29,20 @@ import {
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const databaseURL = process.env.DATABASE_URL || "file:./data/payload.db";
-const databaseAuthToken = process.env.DATABASE_AUTH_TOKEN;
+function env(name: string) {
+  const value = process.env[name]?.trim();
+  if (!value) return undefined;
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+const databaseURL = env("DATABASE_URL") || env("TURSO_DATABASE_URL") || "file:./data/payload.db";
+const databaseAuthToken = env("DATABASE_AUTH_TOKEN") || env("TURSO_AUTH_TOKEN");
 const isLocalFileDB = databaseURL.startsWith("file:");
 
 function ensureDir(dir: string) {
@@ -97,6 +109,10 @@ export default buildConfig({
   }),
   graphQL: { disable: true },
   onInit: async (payload) => {
-    await seed(payload);
+    try {
+      await seed(payload);
+    } catch (error) {
+      payload.logger.error({ err: error }, "Seed failed");
+    }
   },
 });
