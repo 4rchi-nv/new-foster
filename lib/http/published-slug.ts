@@ -15,6 +15,12 @@ let database: DatabaseSync | null | undefined;
 
 function db() {
   if (database !== undefined) return database;
+  const url = process.env.DATABASE_URL || "file:./data/payload.db";
+  // Remote Turso / LibSQL — skip the local file check; the page render uses Payload.
+  if (!url.startsWith("file:")) {
+    database = null;
+    return database;
+  }
   try {
     database = new DatabaseSync(path.join(process.cwd(), "data", "payload.db"), { readOnly: true });
   } catch {

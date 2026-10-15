@@ -29,9 +29,21 @@ import {
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-mkdirSync(path.join(process.cwd(), "data"), { recursive: true });
-mkdirSync(path.join(process.cwd(), "media"), { recursive: true });
-mkdirSync(path.join(process.cwd(), "storage", "inquiries"), { recursive: true });
+const databaseURL = process.env.DATABASE_URL || "file:./data/payload.db";
+const databaseAuthToken = process.env.DATABASE_AUTH_TOKEN;
+const isLocalFileDB = databaseURL.startsWith("file:");
+
+function ensureDir(dir: string) {
+  try {
+    mkdirSync(dir, { recursive: true });
+  } catch {
+    // Vercel (and similar) may ship a read-only filesystem outside /tmp.
+  }
+}
+
+if (isLocalFileDB) ensureDir(path.join(process.cwd(), "data"));
+ensureDir(path.join(process.cwd(), "media"));
+ensureDir(path.join(process.cwd(), "storage", "inquiries"));
 
 export default buildConfig({
   admin: {
@@ -75,8 +87,12 @@ export default buildConfig({
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: sqliteAdapter({
-    client: { url: process.env.DATABASE_URL || "file:./data/payload.db" },
-    // ponytail: schema push on boot suits one SQLite file. Use migrations before running more than one server.
+    client: {
+      url: databaseURL,
+      // Turso / remote LibSQL. Leave unset for local `file:./data/payload.db`.
+      ...(databaseAuthToken ? { authToken: databaseAuthToken } : {}),
+    },
+    // ponytail: schema push on boot suits one SQLite/Turso DB. Use migrations before multiple apps share a schema.
     push: true,
   }),
   graphQL: { disable: true },

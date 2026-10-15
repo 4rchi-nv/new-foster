@@ -16,7 +16,8 @@ Fill in `.env.local`:
 | Variable | Purpose |
 | --- | --- |
 | `PAYLOAD_SECRET` | Session secret. Required. |
-| `DATABASE_URL` | SQLite file. Default `file:./data/payload.db`. |
+| `DATABASE_URL` | Local: `file:./data/payload.db`. On Vercel: Turso URL `libsql://…`. |
+| `DATABASE_AUTH_TOKEN` | Turso auth token. Only for remote `DATABASE_URL`. Leave empty locally. |
 | `NEXT_PUBLIC_SITE_URL` | Public origin, no trailing slash. Used for canonical URLs. |
 | `PAYLOAD_ADMIN_EMAIL` | First editor email. Created only if no users exist. |
 | `PAYLOAD_ADMIN_PASSWORD` | First editor password. |
@@ -89,6 +90,42 @@ SQLite schema is pushed on boot. That fits a single database file. Move to Paylo
 Back up `data/payload.db`, `media/`, and `storage/`. Inquiry files are confidential customer documents.
 
 Set `NEXT_PUBLIC_SITE_URL` to the real `https` origin so canonical, hreflang, sitemap, and robots URLs are correct.
+
+### Turso (Vercel / staging DB)
+
+Local stays `file:./data/payload.db`. Vercel needs a remote LibSQL DB.
+
+**Windows:** the `install.sh` script does not run in Git Bash. Prefer the [dashboard](https://turso.tech/) (no CLI), or install the CLI inside **WSL** / Linux, then run the commands below.
+
+```bash
+# macOS / Linux / WSL — not Git Bash on Windows
+curl -sSfL https://get.tur.so/install.sh | bash
+turso auth login
+turso db create new-foster
+turso db show new-foster --url
+turso db tokens create new-foster
+```
+
+**Dashboard path (any OS):** create a database → copy the `libsql://…` URL → create a token → paste both into Vercel as below.
+
+Vercel → Settings → Environment Variables (Preview or Production):
+
+| Name | Value |
+| --- | --- |
+| `PAYLOAD_SECRET` | long random string |
+| `DATABASE_URL` | output of `turso db show … --url` (`libsql://…`) |
+| `DATABASE_AUTH_TOKEN` | output of `turso db tokens create …` |
+| `NEXT_PUBLIC_SITE_URL` | `https://your-app.vercel.app` |
+| `PAYLOAD_ADMIN_EMAIL` | first editor (empty DB only) |
+| `PAYLOAD_ADMIN_PASSWORD` | first editor password |
+
+Redeploy. Open `/ru` and `/admin`.
+
+Notes:
+
+- Do **not** put Turso values into `.env.local` unless you intentionally want to talk to the remote DB from the laptop.
+- Local `data/payload.db` is not uploaded. Empty Turso gets seed; fill the rest in `/admin`.
+- Media/`storage` on Vercel are not durable until object storage is wired.
 
 ## Routes
 
