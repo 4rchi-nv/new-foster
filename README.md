@@ -41,8 +41,8 @@ The Afipsky refinery example from the brief is a content-structure sample. It is
 
 Sign in at `/admin`. The interface is in Russian by default.
 
-- **Содержание сайта** — name, slogan, homepage text, workflow, principles, contacts, homepage SEO.
-- **Компетенции** — the five work areas.
+- **Содержание сайта** — company, homepage blocks, page intros (company / expertise / equipment / projects / news / documents / contacts / standards), workflow sequence, principles, contacts, SEO.
+- **Компетенции** — the five work areas, including stage steps on the expertise page.
 - **Показатели** — approved numbers only.
 - **Группы / категории / оборудование** — the equipment tree. A new category appears on the site without a code change.
 - **Проекты** — case studies. Fill only the sections you have. Publish when the case is approved.

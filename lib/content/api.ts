@@ -116,14 +116,41 @@ function linksOf(value: unknown, locale: Locale, base: string): NamedLink[] {
 
 const published = { status: { equals: "published" } } as const;
 
+function titlesOf(value: unknown, key = "title") {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((row) => {
+    const title = str(record(row)?.[key]);
+    return title ? [title] : [];
+  });
+}
+
+function groupOf(value: unknown) {
+  return record(value) ?? {};
+}
+
+function pageCopyOf(value: unknown) {
+  const row = groupOf(value);
+  return { lede: str(row.lede), note: str(row.note) };
+}
+
 export const getSite = cache(async (locale: Locale): Promise<SiteContent> => {
   const payload = await cms();
   const site = await payload.findGlobal({ slug: "site", locale, fallbackLocale: false });
   const data = site as Record<string, unknown>;
+  const home = groupOf(data.home);
+  const pages = groupOf(data.pages);
+  const company = groupOf(pages.company);
+  const equipment = groupOf(pages.equipment);
+  const projects = groupOf(pages.projects);
+  const news = groupOf(pages.news);
+  const documents = groupOf(pages.documents);
+  const contacts = groupOf(pages.contacts);
+  const standards = groupOf(pages.standards);
   const workflow = Array.isArray(data.workflow)
     ? data.workflow.flatMap((step) => {
-        const title = str(record(step)?.title);
-        return title ? [{ title }] : [];
+        const row = record(step);
+        const title = str(row?.title);
+        return title ? [{ title, text: str(row?.text) }] : [];
       })
     : [];
   const principles = Array.isArray(data.principles)
@@ -146,6 +173,79 @@ export const getSite = cache(async (locale: Locale): Promise<SiteContent> => {
     address: str(data.address),
     seoTitle: str(data.seoTitle),
     seoDescription: str(data.seoDescription),
+    home: {
+      approach: str(home.approach),
+      strip: titlesOf(home.strip, "text"),
+      aboutTitle: str(home.aboutTitle),
+      aboutLead: str(home.aboutLead),
+      aboutText: str(home.aboutText),
+      aboutLink: str(home.aboutLink),
+      skillsTitle: str(home.skillsTitle),
+      skillsLead: str(home.skillsLead),
+      processTitle: str(home.processTitle),
+      processLead: str(home.processLead),
+      heatTitle: str(home.heatTitle),
+      heatLead: str(home.heatLead),
+      furnaces: titlesOf(home.furnaces),
+      projectsTitle: str(home.projectsTitle),
+      projectsLead: str(home.projectsLead),
+      practiceTitle: str(home.practiceTitle),
+      practiceText: str(home.practiceText),
+      whyTitle: str(home.whyTitle),
+      standardsTitle: str(home.standardsTitle),
+      standardsText: str(home.standardsText),
+      standardsMeta: str(home.standardsMeta),
+      materialsTitle: str(home.materialsTitle),
+      materialsText: str(home.materialsText),
+      materialsMeta: str(home.materialsMeta),
+      askTitle: str(home.askTitle),
+      askText: str(home.askText),
+      askMeta: str(home.askMeta),
+    },
+    pages: {
+      company: {
+        ...pageCopyOf(company),
+        profileTitle: str(company.profileTitle),
+        profileLead: str(company.profileLead),
+        profileText: str(company.profileText),
+        directionsTitle: str(company.directionsTitle),
+        factsTitle: str(company.factsTitle),
+        legal: str(company.legal),
+        docsLink: str(company.docsLink),
+      },
+      expertise: pageCopyOf(pages.expertise),
+      equipment: {
+        ...pageCopyOf(equipment),
+        fitTitle: str(equipment.fitTitle),
+        fitText: str(equipment.fitText),
+      },
+      projects: {
+        ...pageCopyOf(projects),
+        archiveTitle: str(projects.archiveTitle),
+        archiveText: str(projects.archiveText),
+      },
+      news: { ...pageCopyOf(news), title: str(news.title) },
+      documents: {
+        ...pageCopyOf(documents),
+        requestTitle: str(documents.requestTitle),
+        requestText: str(documents.requestText),
+      },
+      contacts: {
+        ...pageCopyOf(contacts),
+        title: str(contacts.title),
+        text: str(contacts.text),
+        hours: str(contacts.hours),
+        map: str(contacts.map),
+        mapText: str(contacts.mapText),
+        formTitle: str(contacts.formTitle),
+        formText: str(contacts.formText),
+      },
+      standards: {
+        ...pageCopyOf(standards),
+        useTitle: str(standards.useTitle),
+        useText: str(standards.useText),
+      },
+    },
     workflow,
     principles,
   };
@@ -168,7 +268,13 @@ export const getExpertise = cache(async (locale: Locale): Promise<ExpertiseItem[
     const title = str(row.title);
     const text = str(row.text);
     if (!title || !text) return [];
-    return [{ index: str(row.index), title, text, slug: str(row.slug) }];
+    return [{
+      index: str(row.index),
+      title,
+      text,
+      slug: str(row.slug),
+      steps: titlesOf(row.steps),
+    }];
   });
 });
 

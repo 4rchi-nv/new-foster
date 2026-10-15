@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Pager } from "@/components/content/Pager";
 import { ConceptPlate, FilterLinks, ImageSlot, InfoNote, queryHref } from "@/components/ui/frames";
 import { PageHero, Section, TechnicalMedia } from "@/components/ui/primitives";
-import { getArticles } from "@/lib/content/api";
+import { getArticles, getSite } from "@/lib/content/api";
+import { pick } from "@/lib/content/pick";
 import { exampleArticleSlug, frames } from "@/lib/i18n/frames";
 import { localePath } from "@/lib/i18n/locales";
 import { readLocale } from "@/lib/i18n/page";
@@ -14,7 +15,9 @@ import { pageMetadata } from "@/lib/seo";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const locale = await readLocale(params);
   const f = frames(locale);
-  return pageMetadata({ locale, path: "/news", title: f.news.title, description: f.news.lede });
+  const site = await getSite(locale);
+  const title = pick(site.pages.news.title, f.news.title);
+  return pageMetadata({ locale, path: "/news", title, description: pick(site.pages.news.lede, f.news.lede) });
 }
 
 export default async function NewsPage({
@@ -29,13 +32,16 @@ export default async function NewsPage({
   const t = copy(locale);
   const f = frames(locale);
   const pageCopy = f.news;
+  const site = await getSite(locale);
+  const cms = site.pages.news;
+  const title = pick(cms.title, pageCopy.title);
   const path = localePath(locale, "/news");
   const data = await getArticles(locale, Number(query.page || 1));
   const cards = pageCopy.cards.filter((card) => !query.focus || card.focus === query.focus);
   const showFeatured = !query.focus || query.focus === "engineering";
   return (
     <>
-      <PageHero locale={locale} crumbs={[{ label: pageCopy.title }]} code={pageCopy.code} title={pageCopy.title} lede={pageCopy.lede} />
+      <PageHero locale={locale} crumbs={[{ label: title }]} code={pageCopy.code} title={title} lede={pick(cms.lede, pageCopy.lede)} />
       <Section>
         <FilterLinks
           label={t.filterLabel}
@@ -45,7 +51,7 @@ export default async function NewsPage({
             current: (query.focus || "") === focus,
           }))}
         />
-        {!data.items.length ? <div className="mt-8"><InfoNote>{pageCopy.note}</InfoNote></div> : null}
+        {!data.items.length ? <div className="mt-8"><InfoNote>{pick(cms.note, pageCopy.note)}</InfoNote></div> : null}
         {data.items.length ? (
           <ul className="mt-10 grid gap-8">
             {data.items.map((article, index) => (

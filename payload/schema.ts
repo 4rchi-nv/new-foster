@@ -441,6 +441,12 @@ export const Articles: CollectionConfig = {
   ],
 };
 
+const pageCopyFields = (extra: Field[] = []): Field[] => [
+  { name: "lede", type: "textarea", localized: true, label: "Вводный текст" },
+  { name: "note", type: "textarea", localized: true, label: "Примечание" },
+  ...extra,
+];
+
 export const Expertise: CollectionConfig = {
   slug: "expertise",
   labels: { singular: "Компетенция", plural: "Компетенции" },
@@ -451,6 +457,13 @@ export const Expertise: CollectionConfig = {
     { name: "index", type: "text", required: true, label: "Номер", admin: { description: "Например 01" } },
     { name: "title", type: "text", localized: true, required: true, label: "Название" },
     { name: "text", type: "textarea", localized: true, required: true, label: "Описание" },
+    {
+      name: "steps",
+      type: "array",
+      label: "Этапы",
+      labels: { singular: "Этап", plural: "Этапы" },
+      fields: [{ name: "title", type: "text", localized: true, required: true, label: "Этап" }],
+    },
     slugField,
     sortField,
     statusField,
@@ -496,13 +509,152 @@ export const Site: GlobalConfig = {
           ],
         },
         {
+          label: "Главная",
+          fields: [
+            {
+              name: "home",
+              type: "group",
+              label: "Блоки главной",
+              fields: [
+                { name: "approach", type: "text", localized: true, label: "Подпись под схемой" },
+                {
+                  name: "strip",
+                  type: "array",
+                  label: "Полоса под hero",
+                  fields: [{ name: "text", type: "text", localized: true, required: true, label: "Текст" }],
+                },
+                { name: "aboutTitle", type: "text", localized: true, label: "О компании — заголовок" },
+                { name: "aboutLead", type: "textarea", localized: true, label: "О компании — лид" },
+                { name: "aboutText", type: "textarea", localized: true, label: "О компании — текст" },
+                { name: "aboutLink", type: "text", localized: true, label: "О компании — ссылка" },
+                { name: "skillsTitle", type: "text", localized: true, label: "Компетенции — заголовок" },
+                { name: "skillsLead", type: "textarea", localized: true, label: "Компетенции — лид" },
+                { name: "processTitle", type: "text", localized: true, label: "Последовательность — заголовок" },
+                { name: "processLead", type: "textarea", localized: true, label: "Последовательность — лид" },
+                { name: "heatTitle", type: "text", localized: true, label: "Теплотехника — заголовок" },
+                { name: "heatLead", type: "textarea", localized: true, label: "Теплотехника — лид" },
+                {
+                  name: "furnaces",
+                  type: "array",
+                  label: "Типы печей на главной",
+                  fields: [{ name: "title", type: "text", localized: true, required: true, label: "Название" }],
+                },
+                { name: "projectsTitle", type: "text", localized: true, label: "Проекты — заголовок" },
+                { name: "projectsLead", type: "textarea", localized: true, label: "Проекты — лид" },
+                { name: "practiceTitle", type: "text", localized: true, label: "Практика — заголовок" },
+                { name: "practiceText", type: "textarea", localized: true, label: "Практика — текст" },
+                { name: "whyTitle", type: "text", localized: true, label: "Почему New Foster — заголовок" },
+                { name: "standardsTitle", type: "text", localized: true, label: "Нормативная база — заголовок" },
+                { name: "standardsText", type: "textarea", localized: true, label: "Нормативная база — текст" },
+                { name: "standardsMeta", type: "text", localized: true, label: "Нормативная база — мета" },
+                { name: "materialsTitle", type: "text", localized: true, label: "Материалы — заголовок" },
+                { name: "materialsText", type: "textarea", localized: true, label: "Материалы — текст" },
+                { name: "materialsMeta", type: "text", localized: true, label: "Материалы — мета" },
+                { name: "askTitle", type: "text", localized: true, label: "Запрос — заголовок" },
+                { name: "askText", type: "textarea", localized: true, label: "Запрос — текст" },
+                { name: "askMeta", type: "text", localized: true, label: "Запрос — мета" },
+              ],
+            },
+          ],
+        },
+        {
+          label: "Страницы",
+          fields: [
+            {
+              name: "pages",
+              type: "group",
+              label: "Тексты разделов",
+              fields: [
+                {
+                  name: "company",
+                  type: "group",
+                  label: "О компании",
+                  fields: pageCopyFields([
+                    { name: "profileTitle", type: "text", localized: true, label: "Профиль — заголовок" },
+                    { name: "profileLead", type: "textarea", localized: true, label: "Профиль — лид" },
+                    { name: "profileText", type: "textarea", localized: true, label: "Профиль — текст" },
+                    { name: "directionsTitle", type: "text", localized: true, label: "Направления — заголовок" },
+                    { name: "factsTitle", type: "text", localized: true, label: "Факты — заголовок" },
+                    { name: "legal", type: "textarea", localized: true, label: "Реквизиты / пояснение" },
+                    { name: "docsLink", type: "text", localized: true, label: "Ссылка на документы" },
+                  ]),
+                },
+                { name: "expertise", type: "group", label: "Компетенции", fields: pageCopyFields() },
+                {
+                  name: "equipment",
+                  type: "group",
+                  label: "Оборудование",
+                  fields: pageCopyFields([
+                    { name: "fitTitle", type: "text", localized: true, label: "Подбор — заголовок" },
+                    { name: "fitText", type: "textarea", localized: true, label: "Подбор — текст" },
+                  ]),
+                },
+                {
+                  name: "projects",
+                  type: "group",
+                  label: "Проекты",
+                  fields: pageCopyFields([
+                    { name: "archiveTitle", type: "text", localized: true, label: "Архив — заголовок" },
+                    { name: "archiveText", type: "textarea", localized: true, label: "Архив — текст" },
+                  ]),
+                },
+                {
+                  name: "news",
+                  type: "group",
+                  label: "Новости",
+                  fields: [
+                    { name: "title", type: "text", localized: true, label: "Заголовок раздела" },
+                    ...pageCopyFields(),
+                  ],
+                },
+                {
+                  name: "documents",
+                  type: "group",
+                  label: "Документы",
+                  fields: pageCopyFields([
+                    { name: "requestTitle", type: "text", localized: true, label: "Запрос — заголовок" },
+                    { name: "requestText", type: "textarea", localized: true, label: "Запрос — текст" },
+                  ]),
+                },
+                {
+                  name: "contacts",
+                  type: "group",
+                  label: "Контакты",
+                  fields: pageCopyFields([
+                    { name: "title", type: "text", localized: true, label: "Заголовок" },
+                    { name: "text", type: "textarea", localized: true, label: "Текст" },
+                    { name: "hours", type: "text", localized: true, label: "Режим работы" },
+                    { name: "map", type: "text", localized: true, label: "Карта — заголовок" },
+                    { name: "mapText", type: "text", localized: true, label: "Карта — текст" },
+                    { name: "formTitle", type: "text", localized: true, label: "Форма — заголовок" },
+                    { name: "formText", type: "textarea", localized: true, label: "Форма — текст" },
+                  ]),
+                },
+                {
+                  name: "standards",
+                  type: "group",
+                  label: "Нормативная база",
+                  fields: pageCopyFields([
+                    { name: "useTitle", type: "text", localized: true, label: "Порядок — заголовок" },
+                    { name: "useText", type: "textarea", localized: true, label: "Порядок — текст" },
+                  ]),
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: "Принцип работы",
           fields: [
             {
               name: "workflow",
               type: "array",
-              label: "Шаги",
-              fields: [{ name: "title", type: "text", localized: true, required: true, label: "Шаг" }],
+              label: "Шаги последовательности",
+              labels: { singular: "Шаг", plural: "Шаги" },
+              fields: [
+                { name: "title", type: "text", localized: true, required: true, label: "Шаг" },
+                { name: "text", type: "textarea", localized: true, label: "Описание" },
+              ],
             },
           ],
         },

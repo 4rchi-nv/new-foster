@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { FilterLinks, IndexTitle, InfoNote, NextStep, SearchField, queryHref } from "@/components/ui/frames";
 import { DocumentList, PageHero, Section } from "@/components/ui/primitives";
-import { getDocuments } from "@/lib/content/api";
+import { getDocuments, getSite } from "@/lib/content/api";
+import { pick } from "@/lib/content/pick";
 import { frames } from "@/lib/i18n/frames";
 import { localePath } from "@/lib/i18n/locales";
 import { readLocale } from "@/lib/i18n/page";
@@ -13,7 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const locale = await readLocale(params);
   const t = copy(locale);
   const f = frames(locale);
-  return pageMetadata({ locale, path: "/standards", title: t.nav.standards, description: f.standards.lede });
+  const site = await getSite(locale);
+  return pageMetadata({ locale, path: "/standards", title: t.nav.standards, description: pick(site.pages.standards.lede, f.standards.lede) });
 }
 
 export default async function StandardsPage({
@@ -28,6 +30,8 @@ export default async function StandardsPage({
   const t = copy(locale);
   const f = frames(locale);
   const page = f.standards;
+  const site = await getSite(locale);
+  const cms = site.pages.standards;
   const path = localePath(locale, "/standards");
   const documents = await getDocuments(locale, "standards");
   const q = query.q?.trim().toLowerCase() ?? "";
@@ -35,7 +39,7 @@ export default async function StandardsPage({
   const published = documents.filter((item) => !q || `${item.title} ${item.description} ${item.code}`.toLowerCase().includes(q));
   return (
     <>
-      <PageHero locale={locale} crumbs={[{ label: t.nav.standards }]} code={page.code} title={t.nav.standards} lede={page.lede} />
+      <PageHero locale={locale} crumbs={[{ label: t.nav.standards }]} code={page.code} title={t.nav.standards} lede={pick(cms.lede, page.lede)} />
       <Section>
         <div className="grid gap-8 lg:grid-cols-[16rem_1fr]">
           <div>
@@ -53,7 +57,7 @@ export default async function StandardsPage({
           </div>
           <div>
             <SearchField action={path} label={page.search} value={query.q} hidden={query.focus ? { focus: query.focus } : undefined} />
-            {!documents.length ? <div className="mt-8"><InfoNote>{page.note}</InfoNote></div> : null}
+            {!documents.length ? <div className="mt-8"><InfoNote>{pick(cms.note, page.note)}</InfoNote></div> : null}
             {documents.length ? (
               <div className="mt-8"><DocumentList items={published} locale={locale} /></div>
             ) : (
@@ -73,8 +77,8 @@ export default async function StandardsPage({
         </div>
       </Section>
       <Section surface>
-        <IndexTitle index={page.use} title={page.useTitle} />
-        <p className="mt-4 max-w-2xl text-muted">{page.useText}</p>
+        <IndexTitle index={page.use} title={pick(cms.useTitle, page.useTitle)} />
+        <p className="mt-4 max-w-2xl text-muted">{pick(cms.useText, page.useText)}</p>
       </Section>
       <NextStep locale={locale} />
     </>

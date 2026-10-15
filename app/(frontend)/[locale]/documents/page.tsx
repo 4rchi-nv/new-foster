@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { FilterLinks, IndexTitle, InfoNote, NextStep, queryHref } from "@/components/ui/frames";
 import { ChamferedButton, DocumentList, PageHero, Section } from "@/components/ui/primitives";
-import { getDocuments } from "@/lib/content/api";
+import { getDocuments, getSite } from "@/lib/content/api";
+import { pick } from "@/lib/content/pick";
 import { frames } from "@/lib/i18n/frames";
 import { localePath } from "@/lib/i18n/locales";
 import { readLocale } from "@/lib/i18n/page";
@@ -13,7 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const locale = await readLocale(params);
   const t = copy(locale);
   const f = frames(locale);
-  return pageMetadata({ locale, path: "/documents", title: t.documents, description: f.documents.lede });
+  const site = await getSite(locale);
+  return pageMetadata({ locale, path: "/documents", title: t.documents, description: pick(site.pages.documents.lede, f.documents.lede) });
 }
 
 export default async function DocumentsPage({
@@ -28,12 +30,14 @@ export default async function DocumentsPage({
   const t = copy(locale);
   const f = frames(locale);
   const page = f.documents;
+  const site = await getSite(locale);
+  const cms = site.pages.documents;
   const path = localePath(locale, "/documents");
   const documents = await getDocuments(locale, "company");
   const rows = page.rows.filter((row) => !query.focus || row.focus === query.focus);
   return (
     <>
-      <PageHero locale={locale} crumbs={[{ label: t.documents }]} code={page.code} title={t.documents} lede={page.lede} />
+      <PageHero locale={locale} crumbs={[{ label: t.documents }]} code={page.code} title={t.documents} lede={pick(cms.lede, page.lede)} />
       <Section>
         <FilterLinks
           label={t.filterLabel}
@@ -43,7 +47,7 @@ export default async function DocumentsPage({
             current: (query.focus || "") === focus,
           }))}
         />
-        {!documents.length ? <div className="mt-8"><InfoNote>{page.note}</InfoNote></div> : null}
+        {!documents.length ? <div className="mt-8"><InfoNote>{pick(cms.note, page.note)}</InfoNote></div> : null}
         {documents.length ? (
           <div className="mt-8"><DocumentList items={documents} locale={locale} /></div>
         ) : (
@@ -66,8 +70,8 @@ export default async function DocumentsPage({
         )}
       </Section>
       <Section surface>
-        <IndexTitle index={page.request} title={page.requestTitle} />
-        <p className="mt-4 max-w-2xl text-muted">{page.requestText}</p>
+        <IndexTitle index={page.request} title={pick(cms.requestTitle, page.requestTitle)} />
+        <p className="mt-4 max-w-2xl text-muted">{pick(cms.requestText, page.requestText)}</p>
         <div className="mt-8">
           <ChamferedButton href={`${localePath(locale, "/contacts")}?source=documents`}>{f.requestDocument} <span aria-hidden>↗</span></ChamferedButton>
         </div>

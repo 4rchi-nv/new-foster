@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
 import { FilterLinks, IndexTitle, InfoNote, NextStep } from "@/components/ui/frames";
-import { Container, PageHero, Section } from "@/components/ui/primitives";
+import { PageHero, Section } from "@/components/ui/primitives";
+import { getExpertise, getSite } from "@/lib/content/api";
+import { pick } from "@/lib/content/pick";
 import { frames } from "@/lib/i18n/frames";
 import { readLocale } from "@/lib/i18n/page";
 import { copy } from "@/lib/i18n/ui";
@@ -11,7 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const locale = await readLocale(params);
   const t = copy(locale);
   const f = frames(locale);
-  return pageMetadata({ locale, path: "/expertise", title: t.nav.expertise, description: f.expertise.lede });
+  const site = await getSite(locale);
+  return pageMetadata({
+    locale,
+    path: "/expertise",
+    title: t.nav.expertise,
+    description: pick(site.pages.expertise.lede, f.expertise.lede),
+  });
 }
 
 export default async function ExpertisePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -19,24 +27,44 @@ export default async function ExpertisePage({ params }: { params: Promise<{ loca
   const t = copy(locale);
   const f = frames(locale);
   const page = f.expertise;
+  const [site, expertise] = await Promise.all([getSite(locale), getExpertise(locale)]);
+  const cms = site.pages.expertise;
+  const skills = expertise.length
+    ? expertise.map((item) => {
+        const fallback = f.skills.find((skill) => skill.slug === item.slug);
+        return {
+          slug: item.slug,
+          title: item.title,
+          text: item.text,
+          steps: item.steps.length ? item.steps : fallback?.steps ?? [],
+        };
+      })
+    : f.skills;
+
   return (
     <>
-      <PageHero locale={locale} crumbs={[{ label: t.nav.expertise }]} code={page.code} title={t.nav.expertise} lede={page.lede} />
+      <PageHero
+        locale={locale}
+        crumbs={[{ label: t.nav.expertise }]}
+        code={page.code}
+        title={t.nav.expertise}
+        lede={pick(cms.lede, page.lede)}
+      />
       <Section>
         <FilterLinks
           label={t.filterLabel}
           items={[
             { href: "#directions", label: page.filters[0], current: false },
-            ...f.skills.map((skill, index) => ({
+            ...skills.map((skill) => ({
               href: `#${skill.slug}`,
-              label: page.filters[index + 1] ?? skill.title,
+              label: skill.title,
               current: false,
             })),
           ]}
         />
-        <div className="mt-8"><InfoNote>{page.note}</InfoNote></div>
+        <div className="mt-8"><InfoNote>{pick(cms.note, page.note)}</InfoNote></div>
         <div id="directions" className="mt-12 grid gap-16">
-          {f.skills.map((skill, index) => (
+          {skills.map((skill, index) => (
             <article key={skill.slug} id={skill.slug}>
               <IndexTitle index={`${String(index + 1).padStart(2, "0")} / ${page.kicker}`} title={skill.title} />
               <p className="mt-4 max-w-2xl text-muted">{skill.text}</p>

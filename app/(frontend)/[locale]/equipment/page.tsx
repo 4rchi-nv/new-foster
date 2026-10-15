@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { ConceptPlate, FilterLinks, IndexTitle, InfoNote, NextStep, SearchField, queryHref } from "@/components/ui/frames";
 import { PageHero, Section } from "@/components/ui/primitives";
+import { getSite } from "@/lib/content/api";
+import { pick } from "@/lib/content/pick";
 import { frames } from "@/lib/i18n/frames";
 import { localePath } from "@/lib/i18n/locales";
 import { readLocale } from "@/lib/i18n/page";
@@ -13,7 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const locale = await readLocale(params);
   const t = copy(locale);
   const f = frames(locale);
-  return pageMetadata({ locale, path: "/equipment", title: t.nav.equipment, description: f.equipment.lede });
+  const site = await getSite(locale);
+  return pageMetadata({ locale, path: "/equipment", title: t.nav.equipment, description: pick(site.pages.equipment.lede, f.equipment.lede) });
 }
 
 export default async function EquipmentPage({
@@ -28,6 +31,8 @@ export default async function EquipmentPage({
   const t = copy(locale);
   const f = frames(locale);
   const page = f.equipment;
+  const site = await getSite(locale);
+  const cms = site.pages.equipment;
   const path = localePath(locale, "/equipment");
   const q = query.q?.trim().toLowerCase() ?? "";
   const cards = page.directions.filter((item) => {
@@ -37,7 +42,7 @@ export default async function EquipmentPage({
   });
   return (
     <>
-      <PageHero locale={locale} crumbs={[{ label: t.nav.equipment }]} code={page.code} title={t.nav.equipment} lede={page.lede} />
+      <PageHero locale={locale} crumbs={[{ label: t.nav.equipment }]} code={page.code} title={t.nav.equipment} lede={pick(cms.lede, page.lede)} />
       <Section>
         <FilterLinks
           label={t.filterLabel}
@@ -50,7 +55,7 @@ export default async function EquipmentPage({
         <div className="mt-6">
           <SearchField action={path} label={page.search} value={query.q} hidden={query.focus ? { focus: query.focus } : undefined} />
         </div>
-        <div className="mt-8"><InfoNote>{page.note}</InfoNote></div>
+        <div className="mt-8"><InfoNote>{pick(cms.note, page.note)}</InfoNote></div>
         <ul className="mt-10 grid gap-8 md:grid-cols-2">
           {cards.map((item) => (
             <li key={item.slug} className="border border-border bg-surface">
@@ -67,8 +72,8 @@ export default async function EquipmentPage({
         </ul>
       </Section>
       <Section surface>
-        <IndexTitle index={page.fitEyebrow} title={page.fitTitle} />
-        <p className="mt-4 max-w-2xl text-muted">{page.fitText}</p>
+        <IndexTitle index={page.fitEyebrow} title={pick(cms.fitTitle, page.fitTitle)} />
+        <p className="mt-4 max-w-2xl text-muted">{pick(cms.fitText, page.fitText)}</p>
       </Section>
       <NextStep locale={locale} />
     </>

@@ -31,6 +31,68 @@ export type NamedLink = {
   summary: string;
 };
 
+export type PageCopy = {
+  lede: string;
+  note: string;
+};
+
+export type SiteHome = {
+  approach: string;
+  strip: string[];
+  aboutTitle: string;
+  aboutLead: string;
+  aboutText: string;
+  aboutLink: string;
+  skillsTitle: string;
+  skillsLead: string;
+  processTitle: string;
+  processLead: string;
+  heatTitle: string;
+  heatLead: string;
+  furnaces: string[];
+  projectsTitle: string;
+  projectsLead: string;
+  practiceTitle: string;
+  practiceText: string;
+  whyTitle: string;
+  standardsTitle: string;
+  standardsText: string;
+  standardsMeta: string;
+  materialsTitle: string;
+  materialsText: string;
+  materialsMeta: string;
+  askTitle: string;
+  askText: string;
+  askMeta: string;
+};
+
+export type SitePages = {
+  company: PageCopy & {
+    profileTitle: string;
+    profileLead: string;
+    profileText: string;
+    directionsTitle: string;
+    factsTitle: string;
+    legal: string;
+    docsLink: string;
+  };
+  expertise: PageCopy;
+  equipment: PageCopy & { fitTitle: string; fitText: string };
+  projects: PageCopy & { archiveTitle: string; archiveText: string };
+  news: PageCopy & { title: string };
+  documents: PageCopy & { requestTitle: string; requestText: string };
+  contacts: PageCopy & {
+    title: string;
+    text: string;
+    hours: string;
+    map: string;
+    mapText: string;
+    formTitle: string;
+    formText: string;
+  };
+  standards: PageCopy & { useTitle: string; useText: string };
+};
+
 export type SiteContent = {
   companyName: string;
   legalName: string;
@@ -43,7 +105,9 @@ export type SiteContent = {
   address: string;
   seoTitle: string;
   seoDescription: string;
-  workflow: { title: string }[];
+  home: SiteHome;
+  pages: SitePages;
+  workflow: { title: string; text: string }[];
   principles: { title: string; text: string }[];
 };
 
@@ -52,6 +116,7 @@ export type ExpertiseItem = {
   title: string;
   text: string;
   slug: string;
+  steps: string[];
 };
 
 export type MetricItem = {
