@@ -25,7 +25,7 @@ export function SiteHeader({ locale, pathname }: { locale: Locale; pathname: str
     <header className="sticky top-0 z-40 border-b border-border bg-surface">
       <Container className="flex h-16 items-center gap-6">
         <Link href={localePath(locale)} className="shrink-0">
-          <BrandLogo priority />
+          <BrandLogo variant="auto" priority />
         </Link>
         <nav className="ml-auto hidden items-center gap-5 min-[1400px]:flex" aria-label={locale === "ru" ? "Основное меню" : "Main"}>
           {links.map(([key, href]) => {

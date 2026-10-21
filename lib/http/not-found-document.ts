@@ -10,9 +10,12 @@ export function notFoundDocument(locale: Locale) {
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="light dark"/>
+<meta name="theme-color" content="#f3f4f5"/>
 <meta name="robots" content="noindex"/>
 <title>${t.notFound} — ${t.brand}</title>
 <style>
+  html{color-scheme:light dark}
   body{margin:0;background:#f3f4f5;color:#1a1d21;font-family:"IBM Plex Sans","Segoe UI",sans-serif}
   main{max-width:1360px;margin:0 auto;padding:6rem 1.5rem}
   .k{font-family:"IBM Plex Mono",ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:#008dd2;font-size:.75rem}

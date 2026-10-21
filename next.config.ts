@@ -6,6 +6,8 @@ const parsed = new URL(site);
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  // Phone / LAN preview hits Next HMR as cross-origin; allow the LAN host in use.
+  allowedDevOrigins: ["192.168.203.188", "172.26.224.1"],
   experimental: {
     serverActions: {
       bodySizeLimit: "20mb",

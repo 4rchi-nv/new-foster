@@ -16,6 +16,30 @@
   --cut: 14px;
 }
 
+/*
+ * Keep New Foster blue under Android/Chrome force-dark.
+ * color-scheme: only light opts the paint out of UA remapping; hard hex pins the token.
+ */
+:where(.bg-brand, .text-brand, .decoration-brand, .bg-brand-subtle, .nf-brand-lock) {
+  color-scheme: only light;
+}
+
+:where(.bg-brand) {
+  background-color: #008dd2 !important;
+}
+
+:where(.text-brand) {
+  color: #008dd2 !important;
+}
+
+:where(.decoration-brand) {
+  text-decoration-color: #008dd2 !important;
+}
+
+:where(.bg-brand-subtle) {
+  background-color: #e6f4fb !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -72,6 +96,7 @@
 }
 
 html {
+  color-scheme: light dark;
   scroll-behavior: smooth;
 }
 
@@ -84,11 +109,46 @@ body {
 
 ::selection {
   background: var(--brand-subtle);
+  color: var(--foreground);
 }
 
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
+}
+
+/* White PNG canvas is taller (≈1.33) than two-color (≈3.96); cover into the same slot. */
+.brand-logo__white-fit {
+  object-fit: cover;
+  object-position: left center;
+}
+
+/* auto: SSR/light surface → two-color; dark surface (incl. force-dark) → white. */
+.brand-logo--auto .brand-logo__white {
+  display: none;
+}
+
+.brand-logo--auto[data-surface="dark"] .brand-logo__default {
+  display: none !important;
+}
+
+.brand-logo--auto[data-surface="dark"] .brand-logo__white {
+  display: block !important;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --foreground-muted: #1a1d21;
+    --border: #1a1d21;
+    --focus: #008dd2;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 3px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

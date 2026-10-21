@@ -54,7 +54,7 @@ export function MobileNav({ locale, pathname }: { locale: Locale; pathname: stri
       {open ? (
         <div id="mobile-nav" role="dialog" aria-modal="true" aria-labelledby={titleId} className="fixed inset-0 z-50 bg-surface">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <BrandLogo id={titleId} className="h-8 w-auto" />
+            <BrandLogo variant="auto" id={titleId} className="h-8 w-auto" />
             <button ref={closeRef} type="button" className="min-h-11 px-3 font-mono text-xs uppercase tracking-[0.14em]" onClick={() => setOpen(false)}>
               {t.close}
             </button>

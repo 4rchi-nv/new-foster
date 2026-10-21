@@ -32,7 +32,7 @@ export function SiteFooter({
     <footer className="border-t border-border bg-surface">
       <Container className="grid gap-10 py-12 md:grid-cols-2 xl:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <BrandLogo className="h-8 w-auto" />
+          <BrandLogo variant="auto" className="h-8 w-auto" />
           <p className="mt-4 max-w-xs text-sm leading-6 text-muted">
             {locale === "ru"
               ? "Инженерные решения для нефтепереработки и нефтехимии."

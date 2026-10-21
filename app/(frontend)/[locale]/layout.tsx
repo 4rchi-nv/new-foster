@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
@@ -12,6 +12,11 @@ import { copy } from "@/lib/i18n/ui";
 import { siteUrl } from "@/lib/utils";
 
 import "../../globals.css";
+
+export const viewport: Viewport = {
+  colorScheme: "light dark",
+  themeColor: "#f3f4f5",
+};
 
 const sans = IBM_Plex_Sans({
   subsets: ["latin", "cyrillic"],
