@@ -13,6 +13,10 @@ export const defaultSiteRu = {
   seoTitle: "Нью Фостер — инжиниринг и оборудование для нефтепереработки",
   seoDescription:
     "Инженерные решения, производство и поставка оборудования для нефтеперерабатывающей и нефтехимической промышленности.",
+  phone: "+7 916 555-67-88",
+  email: "info@newfoster.com",
+  address:
+    "115093, г. Москва, вн.тер.г. муниципальный округ Даниловский, пер. Партийный, д. 1, к. 58, стр. 3",
   home: {
     approach: "Теплотехника / системный подход",
     strip: [
@@ -96,15 +100,15 @@ export const defaultSiteRu = {
       requestText: "Укажите тип документа и проектную задачу. Возможность предоставления материалов будет уточнена отдельно.",
     },
     contacts: {
-      lede: "Для инженерных задач, вопросов по оборудованию и запросов документации.",
-      note: "Реквизиты и контактные сведения ожидают согласования. В макете не используются вымышленные телефон, email или адрес.",
-      title: "Начнём с предметного разговора",
-      text: "Укажите направление запроса и приложите исходные материалы. Контактные данные будут опубликованы после подтверждения.",
-      hours: "Режим работы уточняется",
-      map: "Карта будет добавлена после подтверждения адреса",
-      mapText: "Расположение компании пока не указано",
-      formTitle: "Расскажите о задаче",
-      formText: "Техническое задание, параметры процесса и требования к поставке помогут определить следующий шаг.",
+      lede: "Контакты ООО «Нью Фостер» по вопросам сотрудничества.",
+      note: "",
+      title: "Как связаться",
+      text: "Напишите на электронную почту или позвоните по телефону.",
+      hours: "",
+      map: "",
+      mapText: "",
+      formTitle: "",
+      formText: "",
     },
     standards: {
       lede: "Навигация по требованиям для инженерных задач. Актуальность и применимость проверяются для каждого проекта.",
@@ -153,6 +157,10 @@ export const defaultSiteEn = {
   seoTitle: "New Foster — engineering and equipment for oil refining",
   seoDescription:
     "Engineering, manufacturing, and supply of equipment for the oil refining and petrochemical industries.",
+  phone: "+7 916 555-67-88",
+  email: "info@newfoster.com",
+  address:
+    "115093, г. Москва, вн.тер.г. муниципальный округ Даниловский, пер. Партийный, д. 1, к. 58, стр. 3",
   home: {
     approach: "Thermal engineering / systems approach",
     strip: [
@@ -234,15 +242,15 @@ export const defaultSiteEn = {
       requestText: "Name the document type and the project task. Availability will be confirmed separately.",
     },
     contacts: {
-      lede: "For engineering tasks, equipment questions, and document requests.",
-      note: "Contact details await confirmation. The layout does not use fictional phone, email, or address.",
-      title: "Start with a concrete conversation",
-      text: "Indicate the request direction and attach source materials. Contact details will be published after confirmation.",
-      hours: "Business hours to be confirmed",
-      map: "The map will be added after the address is confirmed",
-      mapText: "Company location is not listed yet",
-      formTitle: "Describe the task",
-      formText: "A specification, the process parameters, and the delivery requirements help define the next step.",
+      lede: "New Foster LLC contacts for cooperation.",
+      note: "",
+      title: "How to reach the company",
+      text: "Write to the email or call the phone number.",
+      hours: "",
+      map: "",
+      mapText: "",
+      formTitle: "",
+      formText: "",
     },
     standards: {
       lede: "Navigation through requirements for engineering tasks. Applicability is checked for each project.",

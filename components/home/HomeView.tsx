@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { FurnaceDiagram } from "@/components/graphics/FurnaceDiagram";
 import { CtaLink } from "@/components/layout/CtaLink";
-import { ProjectInquiryForm } from "@/components/inquiry/ProjectInquiryForm";
 import { ChamferedButton, Container, Section, TechnicalLabel, TechnicalMedia } from "@/components/ui/primitives";
 import { pick } from "@/lib/content/pick";
 import type { ArticleCard, EquipmentGroup, ExpertiseItem, MetricItem, ProjectCard, SiteContent } from "@/lib/content/types";
@@ -77,10 +76,6 @@ const copyHome = {
     materialsTitle: "Материалы",
     materialsText: "Технические статьи, новости компании и документы для работы над проектом.",
     materialsMeta: "Публикации / документы",
-    askLabel: "07 / Начнём с задачи",
-    askTitle: "Запрос по проекту",
-    askText: "Расскажите о задаче. Приложите техническое задание или исходные данные — это поможет начать предметный разговор.",
-    askMeta: "Инжиниринг / оборудование / производство",
   },
   en: {
     mark: "NEW FOSTER LLC",
@@ -147,10 +142,6 @@ const copyHome = {
     materialsTitle: "Materials",
     materialsText: "Technical articles, company news, and documents for project work.",
     materialsMeta: "Publications / documents",
-    askLabel: "07 / Start with the task",
-    askTitle: "Project inquiry",
-    askText: "Describe the task. Attach a specification or the source data — that starts a concrete conversation.",
-    askMeta: "Engineering / equipment / manufacturing",
   },
 } as const;
 
@@ -385,17 +376,6 @@ export function HomeView({
         </div>
       </Section>
 
-      <Section surface>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.1fr)]">
-          <div>
-            <TechnicalLabel>{h.askLabel}</TechnicalLabel>
-            <h2 className="type-h2 mt-4">{pick(home.askTitle, h.askTitle)}</h2>
-            <p className="mt-4 max-w-md leading-7 text-muted">{pick(home.askText, h.askText)}</p>
-            <p className="mt-6 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-muted">{pick(home.askMeta, h.askMeta)}</p>
-          </div>
-          <ProjectInquiryForm locale={locale} source="home" />
-        </div>
-      </Section>
     </>
   );
 }

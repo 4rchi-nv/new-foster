@@ -4,7 +4,7 @@ import { notFoundDocument } from "@/lib/http/not-found-document";
 import { isPublishedSlug, type SlugSection } from "@/lib/http/published-slug";
 import { defaultLocale, isLocale, locales, type Locale } from "@/lib/i18n/locales";
 
-const pages = new Set(["company", "expertise", "documents", "equipment", "projects", "standards", "news", "contacts"]);
+const pages = new Set(["company", "expertise", "documents", "equipment", "projects", "standards", "news", "contacts", "privacy"]);
 const slugPages = new Set<SlugSection>(["equipment", "projects", "news"]);
 
 function notFoundResponse(locale: Locale) {

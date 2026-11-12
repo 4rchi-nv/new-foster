@@ -48,3 +48,7 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# local notes and recordings, not for the remote
+/docs/
+/Запись просто на тел-1.pdf

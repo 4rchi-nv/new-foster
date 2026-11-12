@@ -6,7 +6,7 @@ import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const paths = ["/", "/company", "/expertise", "/documents", "/equipment", "/projects", "/standards", "/news", "/contacts"];
+const paths = ["/", "/company", "/expertise", "/documents", "/equipment", "/projects", "/standards", "/news", "/contacts", "/privacy"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = siteUrl();

@@ -48,7 +48,7 @@ Sign in at `/admin`. The interface is in Russian by default.
 - **Проекты** — case studies. Fill only the sections you have. Publish when the case is approved.
 - **Материалы** — technical articles and news.
 - **Документы** — standards and company files. Choose where the file is shown and what kind of document it is. A listed standard is not a certificate unless the certificate file itself is published.
-- **Запросы** — project inquiries and their files.
+- **Запросы** — old inquiries kept in the admin. The public site no longer accepts them.
 
 Addresses are Latin slugs (`tubular-furnaces`). Leave the slug empty on create and it is built from the Russian title.
 
@@ -62,19 +62,15 @@ Each text field has Russian and English values. Edit both. The public URLs are `
 
 - Images: `media/`, served at `/api/media/file/...`.
 - Public documents: `media/documents/`, available only when the document is published.
-- Inquiry files: `storage/inquiries/`. The collection is closed to the public. Editors download them from the inquiry in the admin. They are not attached to email.
+- Old inquiry files, if any: `storage/inquiries/`. The public site does not accept new ones.
 
-Allowed inquiry uploads: PDF, DOC, DOCX, XLS, XLSX. Up to 3 files, 15 MB each.
+## Contacts
 
-## Inquiries
-
-A submission is validated in the browser and again on the server, then stored in **Запросы**. If SMTP variables are set, a notice is also emailed. If mail fails, the inquiry remains in the CMS. If the CMS write fails, the visitor sees an error and nothing is discarded quietly.
-
-Rate limit: 5 inquiries per IP per hour, in memory, on one server process. Use a shared store before running more than one server.
+The site does not collect personal data through a form. Cooperation contacts (email, phone, legal address, INN, OGRN) are on `/contacts`. The footer links to the personal data policy at `/privacy`.
 
 ## Analytics
 
-Set the provider and id, then rebuild. A consent bar is shown. Events: `contact_cta_click`, `form_start`, `spec_upload`, `inquiry_success`, `project_opened`, `equipment_opened`. Events carry a page or slug, not the visitor’s name or email.
+Set the provider and id, then rebuild. A consent bar is shown. Events: `contact_cta_click`, `project_opened`, `equipment_opened`. Events carry a page or slug, not the visitor’s name or email.
 
 ## Production
 

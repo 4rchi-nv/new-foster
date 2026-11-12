@@ -73,7 +73,7 @@ export default async function DocumentsPage({
         <IndexTitle index={page.request} title={pick(cms.requestTitle, page.requestTitle)} />
         <p className="mt-4 max-w-2xl text-muted">{pick(cms.requestText, page.requestText)}</p>
         <div className="mt-8">
-          <ChamferedButton href={`${localePath(locale, "/contacts")}?source=documents`}>{f.requestDocument} <span aria-hidden>↗</span></ChamferedButton>
+          <ChamferedButton href={localePath(locale, "/contacts")}>{f.requestDocument} <span aria-hidden>↗</span></ChamferedButton>
         </div>
       </Section>
       <NextStep locale={locale} />

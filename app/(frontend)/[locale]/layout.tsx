@@ -7,6 +7,8 @@ import { Analytics } from "@/components/analytics/Analytics";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getSite } from "@/lib/content/api";
+import { company } from "@/lib/company";
+import { pick } from "@/lib/content/pick";
 import { readLocale } from "@/lib/i18n/page";
 import { copy } from "@/lib/i18n/ui";
 import { siteUrl } from "@/lib/utils";
@@ -73,8 +75,9 @@ export default async function LocaleLayout({
     legalName: site.legalName || undefined,
     url: siteUrl(),
     logo: `${siteUrl()}/nf-horizontal-logo/two-colors/nf-horizontal-logo-two-colors.png`,
-    email: site.email || undefined,
-    telephone: site.phone || undefined,
+    email: pick(site.email, company.email),
+    telephone: pick(site.phone, company.phone),
+    address: pick(site.address, company.address),
     description: site.positioning || undefined,
   };
 

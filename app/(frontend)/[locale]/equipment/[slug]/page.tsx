@@ -83,7 +83,7 @@ export default async function EquipmentDetailPage({ params }: { params: Promise<
               <dt className="text-muted">{card.execution}</dt>
               <dd className="mt-1 font-medium">{card.executionValue}</dd>
             </div>
-            <ChamferedButton href={`${localePath(locale, "/contacts")}?source=${encodeURIComponent(localePath(locale, `/equipment/${slug}`))}`}>{f.requestSelection} <span aria-hidden>↗</span></ChamferedButton>
+            <ChamferedButton href={localePath(locale, "/contacts")}>{f.requestSelection} <span aria-hidden>↗</span></ChamferedButton>
             <p className="text-muted">{card.serialNote}</p>
           </dl>
         </div>
