@@ -36,16 +36,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   };
   return (
     <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }} />
-    <HomeView
-      locale={locale}
-      site={site}
-      expertise={expertise}
-      metrics={metrics}
-      groups={groups}
-      projects={projects.items.slice(0, 4)}
-      articles={articles.items.slice(0, 3)}
-    />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }} />
+      <HomeView
+        locale={locale}
+        site={site}
+        expertise={expertise}
+        metrics={metrics}
+        groups={groups}
+        projects={projects.items.slice(0, 4)}
+        articles={articles.items.slice(0, 3)}
+      />
     </>
   );
 }
