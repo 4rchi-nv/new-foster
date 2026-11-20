@@ -1,5 +1,6 @@
 import type { CollectionConfig, Field, GlobalConfig } from "payload";
 
+import { documentsDir, inquiriesDir, mediaDir } from "@/lib/storage";
 import { publishedOrStaff, staffOnly } from "@/payload/access";
 import { fillSlug } from "@/payload/hooks";
 
@@ -88,7 +89,7 @@ export const Media: CollectionConfig = {
   access: { read: () => true },
   admin: { group: materials, useAsTitle: "filename" },
   upload: {
-    staticDir: "media",
+    staticDir: mediaDir(),
     mimeTypes: ["image/*"],
     imageSizes: [{ name: "card", width: 1600, height: 1200, fit: "inside" }],
   },
@@ -113,7 +114,7 @@ export const Documents: CollectionConfig = {
     defaultColumns: ["title", "kind", "placement", "status"],
     description: "Публикуйте только согласованные файлы. Черновики на сайте не видны.",
   },
-  upload: { staticDir: "media/documents", mimeTypes: officeMimes },
+  upload: { staticDir: documentsDir(), mimeTypes: officeMimes },
   hooks: { beforeValidate: [fillSlug] },
   fields: [
     { name: "title", type: "text", localized: true, required: true, label: "Название" },
@@ -176,7 +177,7 @@ export const InquiryFiles: CollectionConfig = {
     group: inbox,
     description: "Файлы заказчиков. На сайте не публикуются.",
   },
-  upload: { staticDir: "storage/inquiries", mimeTypes: officeMimes },
+  upload: { staticDir: inquiriesDir(), mimeTypes: officeMimes },
   fields: [{ name: "originalName", type: "text", required: true, label: "Исходное имя" }],
 };
 

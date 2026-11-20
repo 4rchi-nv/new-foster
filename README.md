@@ -74,6 +74,8 @@ Set the provider and id, then rebuild. A consent bar is shown. Events: `contact_
 
 ## Production
 
+Self-hosted Ubuntu steps, systemd, Nginx, backups, and rollback are in `VPS_DEPLOYMENT_GUIDE.md`.
+
 ```bash
 npm test
 npm run lint
@@ -81,11 +83,9 @@ npm run build
 npm start
 ```
 
-SQLite schema is pushed on boot. That fits a single database file. Move to Payload migrations before more than one server uses the database.
+Payload pushes the SQLite schema only when `NODE_ENV` is not `production`. A production process does not change tables on boot and does not reset CMS content. Do not set `PAYLOAD_DROP_DATABASE`.
 
-Back up `data/payload.db`, `media/`, and `storage/`. Inquiry files are confidential customer documents.
-
-Set `NEXT_PUBLIC_SITE_URL` to the real `https` origin so canonical, hreflang, sitemap, and robots URLs are correct.
+`NEXT_PUBLIC_SITE_URL` is inlined at build time. Rebuild after changing it.
 
 ### Turso (Vercel / staging DB)
 

@@ -2,12 +2,13 @@ import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { en } from "@payloadcms/translations/languages/en";
 import { ru } from "@payloadcms/translations/languages/ru";
-import { mkdirSync } from "fs";
 import path from "path";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 
+import { databaseAuthToken, databaseURL } from "@/lib/sqlite-path";
+import { ensureStorageDirs, isProductionRuntime } from "@/lib/storage";
 import { seed } from "@/payload/seed";
 import {
   ArticleCategories,
@@ -29,33 +30,16 @@ import {
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-function env(name: string) {
-  const value = process.env[name]?.trim();
-  if (!value) return undefined;
-  if (
-    (value.startsWith('"') && value.endsWith('"')) ||
-    (value.startsWith("'") && value.endsWith("'"))
-  ) {
-    return value.slice(1, -1);
-  }
-  return value;
+const url = databaseURL();
+const authToken = databaseAuthToken();
+const fileDatabase = url.startsWith("file:");
+const secret = process.env.PAYLOAD_SECRET?.trim() || "";
+
+if (isProductionRuntime() && secret.length < 32) {
+  throw new Error("PAYLOAD_SECRET must be a random string of at least 32 characters in production.");
 }
 
-const databaseURL = env("DATABASE_URL") || env("TURSO_DATABASE_URL") || "file:./data/payload.db";
-const databaseAuthToken = env("DATABASE_AUTH_TOKEN") || env("TURSO_AUTH_TOKEN");
-const isLocalFileDB = databaseURL.startsWith("file:");
-
-function ensureDir(dir: string) {
-  try {
-    mkdirSync(dir, { recursive: true });
-  } catch {
-    // Vercel (and similar) may ship a read-only filesystem outside /tmp.
-  }
-}
-
-if (isLocalFileDB) ensureDir(path.join(process.cwd(), "data"));
-ensureDir(path.join(process.cwd(), "media"));
-ensureDir(path.join(process.cwd(), "storage", "inquiries"));
+ensureStorageDirs();
 
 export default buildConfig({
   admin: {
@@ -81,7 +65,7 @@ export default buildConfig({
   ],
   globals: [Site],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || "",
+  secret,
   sharp,
   localization: {
     locales: [
@@ -100,12 +84,15 @@ export default buildConfig({
   },
   db: sqliteAdapter({
     client: {
-      url: databaseURL,
-      // Turso / remote LibSQL. Leave unset for local `file:./data/payload.db`.
-      ...(databaseAuthToken ? { authToken: databaseAuthToken } : {}),
+      url,
+      // Turso / remote LibSQL. Leave unset for a local file database.
+      ...(authToken ? { authToken } : {}),
     },
-    // ponytail: schema push on boot suits one SQLite/Turso DB. Use migrations before multiple apps share a schema.
+    // Payload already skips push when NODE_ENV=production. Do not add prodMigrations
+    // until this database leaves dev-push: a pushed file has payload_migrations.batch = -1,
+    // and an unattended migrate prompt exits the process.
     push: true,
+    ...(fileDatabase && isProductionRuntime() ? { wal: true as const, busyTimeout: 5000 } : {}),
   }),
   graphQL: { disable: true },
   onInit: async (payload) => {

@@ -176,19 +176,21 @@ export async function seed(payload: Payload) {
   }
 
   const site = await payload.findGlobal({ slug: "site", locale: "ru", overrideAccess: true });
-  const home = (site as { home?: { aboutTitle?: string } }).home;
+  const home = (site as { home?: { aboutTitle?: string }; companyName?: string }).home;
+  const companyName = (site as { companyName?: string }).companyName?.trim();
   const existing = await payload.find({ collection: "expertise", limit: 1, overrideAccess: true });
+  const fresh = existing.totalDocs === 0 && !companyName;
 
-  if (existing.totalDocs === 0) {
+  if (fresh) {
     await upsertSiteCopy(payload, "full");
-  } else if (!home?.aboutTitle?.trim()) {
-    // Existing DB before homepage/pages fields: fill new tabs without clobbering company/contacts.
+  } else if (process.env.NODE_ENV !== "production" && existing.totalDocs > 0 && !home?.aboutTitle?.trim()) {
+    // Old local DB missing homepage fields. Does not touch phone, email, or address.
     await upsertSiteCopy(payload, "pages-only");
   }
 
   await ensureExpertiseSteps(payload);
 
-  if (existing.totalDocs > 0) return;
+  if (!fresh) return;
 
   const expertise = [
     ["01", "engineering", "Инжиниринг", "Engineering", "От исходных данных к согласованному техническому решению.", "From source data to an agreed technical solution."],

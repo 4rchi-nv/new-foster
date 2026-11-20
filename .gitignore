@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+!.env.production.example
 
 # cms data and private uploads
 /data
@@ -48,6 +49,8 @@ next-env.d.ts
 
 .vercel
 .env*
+!.env.example
+!.env.production.example
 
 # local notes and recordings, not for the remote
 /docs/

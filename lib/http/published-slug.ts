@@ -1,7 +1,7 @@
-import path from "path";
 import { DatabaseSync } from "node:sqlite";
 
 import { exampleArticleSlug, exampleProjectSlug } from "@/lib/i18n/frames";
+import { databaseAuthToken, databaseURL, sqliteFilePath } from "@/lib/sqlite-path";
 
 const tables = {
   equipment: "equipment",
@@ -14,39 +14,16 @@ export type SlugSection = keyof typeof tables;
 let localDb: DatabaseSync | null | undefined;
 let remoteClient: { execute: (stmt: { sql: string; args: string[] }) => Promise<{ rows: unknown[] }> } | null | undefined;
 
-function env(name: string) {
-  const value = process.env[name]?.trim();
-  if (!value) return undefined;
-  if (
-    (value.startsWith('"') && value.endsWith('"')) ||
-    (value.startsWith("'") && value.endsWith("'"))
-  ) {
-    return value.slice(1, -1);
-  }
-  return value;
-}
-
-function databaseURL() {
-  return env("DATABASE_URL") || env("TURSO_DATABASE_URL") || "file:./data/payload.db";
-}
-
-function databaseAuthToken() {
-  return env("DATABASE_AUTH_TOKEN") || env("TURSO_AUTH_TOKEN");
-}
-
 function localHandle() {
-  if (localDb !== undefined) return localDb;
+  if (localDb) return localDb;
   const url = databaseURL();
-  if (!url.startsWith("file:")) {
-    localDb = null;
-    return localDb;
-  }
+  if (!url.startsWith("file:")) return null;
   try {
-    localDb = new DatabaseSync(path.join(process.cwd(), "data", "payload.db"), { readOnly: true });
+    localDb = new DatabaseSync(sqliteFilePath(url), { readOnly: true });
+    return localDb;
   } catch {
-    localDb = null;
+    return null;
   }
-  return localDb;
 }
 
 async function remoteHandle() {

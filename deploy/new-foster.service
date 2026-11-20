@@ -1,0 +1,23 @@
+[Unit]
+Description=New Foster
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=newfoster
+Group=newfoster
+WorkingDirectory=/opt/new-foster/app
+Environment=NODE_ENV=production
+Environment=NODE_OPTIONS=--max-old-space-size=768
+EnvironmentFile=/etc/new-foster.env
+ExecStart=/usr/local/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3000
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
